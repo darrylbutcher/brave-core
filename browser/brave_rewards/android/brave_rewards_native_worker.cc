@@ -301,24 +301,26 @@ void BraveRewardsNativeWorker::OnIsWalletCreated(bool created) {
         weak_java_brave_rewards_native_worker_.get(env), created);
 }
 
-void BraveRewardsNativeWorker::GetCurrentBalanceReport(JNIEnv* env,
+void BraveRewardsNativeWorker::GetBalanceReport(JNIEnv* env,
         const base::android::JavaParamRef<jobject>& obj) {
   if (brave_rewards_service_) {
-    return brave_rewards_service_->GetCurrentBalanceReport();
+    // TODO we need to get month and year from the UI
+    return brave_rewards_service_->GetBalanceReport(
+        base::BindOnce(&BraveRewardsNativeWorker::OnGetBalanceReport,
+            base::Unretained(this)));
   }
 }
 
-void BraveRewardsNativeWorker::OnGetCurrentBalanceReport(
+void BraveRewardsNativeWorker::OnGetBalanceReport(
         brave_rewards::RewardsService* rewards_service,
+        const int32_t result,
         const brave_rewards::BalanceReport& balance_report) {
   std::vector<std::string> values;
-  values.push_back(balance_report.deposits);
   values.push_back(balance_report.grants);
   values.push_back(balance_report.earning_from_ads);
   values.push_back(balance_report.auto_contribute);
   values.push_back(balance_report.recurring_donation);
   values.push_back(balance_report.one_time_donation);
-  values.push_back(balance_report.total);
 
   JNIEnv* env = base::android::AttachCurrentThread();
   base::android::ScopedJavaLocalRef<jobjectArray> java_array =

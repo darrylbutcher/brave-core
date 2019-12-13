@@ -82,22 +82,22 @@ class PageWallet extends React.Component<Props, State> {
   }
 
   getWalletSummary = () => {
-    const { balance, reports } = this.props.rewardsData
+    const { balance, balanceReports } = this.props.rewardsData
 
     let props = {}
 
     const currentTime = new Date()
     const reportKey = `${currentTime.getFullYear()}_${currentTime.getMonth() + 1}`
-    const report: Rewards.Report = reports[reportKey]
+    const report: Rewards.BalanceReport = balanceReports[reportKey]
     if (report) {
       for (let key in report) {
         const item = report[key]
 
-        if (item.length > 1 && key !== 'total') {
-          const tokens = utils.convertProbiToFixed(item)
+        if (item !== 0) {
+          const tokens = item.toFixed(1)
           props[key] = {
             tokens,
-            converted: utils.convertBalance(tokens, balance.rates)
+            converted: utils.convertBalance(item, balance.rates)
           }
         }
       }

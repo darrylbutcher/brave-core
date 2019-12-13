@@ -40,7 +40,7 @@ export const defaultState: Rewards.State = {
     onBoardingDisplayed: false
   },
   autoContributeList: [],
-  reports: {},
+  balanceReports: {},
   recurringList: [],
   tipsList: [],
   contributeLoad: false,
@@ -75,6 +75,10 @@ export const defaultState: Rewards.State = {
 const cleanData = (state: Rewards.State) => {
   if (!state.balance) {
     state.balance = defaultState.balance
+  }
+
+  if (!state.balanceReports) {
+    state.balanceReports = {}
   }
 
   state.ui.modalRedirect = 'hide'

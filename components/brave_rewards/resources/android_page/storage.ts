@@ -40,7 +40,7 @@ export const defaultState: Rewards.State = {
     onBoardingDisplayed: false
   },
   autoContributeList: [],
-  reports: {},
+  balanceReports: {},
   safetyNetFailed: false,
   recurringList: [],
   tipsList: [],
@@ -76,6 +76,10 @@ export const defaultState: Rewards.State = {
 const cleanData = (state: Rewards.State) => {
   if (!state.balance) {
     state.balance = defaultState.balance
+  }
+
+  if (!state.balanceReports) {
+    state.balanceReports = {}
   }
 
   return state
