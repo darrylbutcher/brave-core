@@ -4365,4 +4365,124 @@ void RewardsServiceImpl::OnGetAnonWalletStatus(
   std::move(callback).Run(static_cast<uint32_t>(result));
 }
 
+void RewardsServiceImpl::GetMonthlyReport(
+    const uint32_t month,
+    const uint32_t year,
+    GetMonthlyReportCallback callback) {
+  bat_ledger_->GetBalanceReport(
+      static_cast<ledger::ActivityMonth>(month),
+      year,
+      base::BindOnce(&RewardsServiceImpl::OnGetMonthlyReportBalance,
+                     AsWeakPtr(),
+                     month,
+                     year,
+                     std::move(callback)));
+}
+
+void RewardsServiceImpl::OnGetMonthlyReportBalance(
+    const uint32_t month,
+    const uint32_t year,
+    GetMonthlyReportCallback callback,
+    const ledger::Result result,
+    ledger::BalanceReportInfoPtr report) {
+  MonthlyReport monthly_report;
+  if (result != ledger::Result::LEDGER_OK) {
+    std::move(callback).Run(static_cast<uint32_t>(result), monthly_report);
+    return;
+  }
+
+  BalanceReport converted_report;
+  LedgerToServiceBalanceReport(std::move(report), &converted_report);
+  monthly_report.balance = converted_report;
+
+  bat_ledger_->GetTransactionReport(
+      static_cast<ledger::ActivityMonth>(month),
+      year,
+      base::BindOnce(&RewardsServiceImpl::OnGetMonthlyReportTransaction,
+                     AsWeakPtr(),
+                     month,
+                     year,
+                     monthly_report,
+                     std::move(callback)));
+}
+
+void LedgerToServiceTransactionReportList(
+    ledger::TransactionReportInfoList list,
+    std::vector<TransactionReportInfo>* converted_list) {
+  if (!converted_list) {
+    return;
+  }
+
+  TransactionReportInfo info;
+  for (auto& item : list) {
+    info.amount = item->amount;
+    info.type = static_cast<uint32_t>(item->type);
+    info.publisher = PublisherInfoToContentSite(*item->publisher);
+    info.created_at = item->created_at;
+  }
+}
+
+void RewardsServiceImpl::OnGetMonthlyReportTransaction(
+    const uint32_t month,
+    const uint32_t year,
+    const MonthlyReport& report,
+    GetMonthlyReportCallback callback,
+    const ledger::Result result,
+    ledger::TransactionReportInfoList list) {
+  MonthlyReport monthly_report;
+  monthly_report = report;
+  if (result != ledger::Result::LEDGER_OK) {
+    std::move(callback).Run(static_cast<uint32_t>(result), monthly_report);
+    return;
+  }
+
+  std::vector<TransactionReportInfo> converted_list;
+  LedgerToServiceTransactionReportList(std::move(list), &converted_list);
+  monthly_report.transactions = converted_list;
+
+  bat_ledger_->GetContributionReport(
+      static_cast<ledger::ActivityMonth>(month),
+      year,
+      base::BindOnce(&RewardsServiceImpl::OnGetMonthlyReportContribution,
+                     AsWeakPtr(),
+                     monthly_report,
+                     std::move(callback)));
+}
+
+void LedgerToServiceContributionReportList(
+    ledger::ContributionReportInfoList list,
+    std::vector<ContributionReportInfo>* converted_list) {
+  if (!converted_list) {
+    return;
+  }
+
+  ContributionReportInfo info;
+  for (auto& item : list) {
+    info.amount = item->amount;
+    info.type = static_cast<uint32_t>(item->type);
+    for (auto& publisher : item->publishers) {
+      info.publishers.push_back(PublisherInfoToContentSite(*publisher));
+    }
+  }
+}
+
+void RewardsServiceImpl::OnGetMonthlyReportContribution(
+    const MonthlyReport& report,
+    GetMonthlyReportCallback callback,
+    const ledger::Result result,
+    ledger::ContributionReportInfoList list) {
+  MonthlyReport monthly_report;
+  monthly_report = report;
+  if (result != ledger::Result::LEDGER_OK) {
+    std::move(callback).Run(static_cast<uint32_t>(result), monthly_report);
+    return;
+  }
+
+  std::vector<ContributionReportInfo> converted_list;
+  LedgerToServiceContributionReportList(std::move(list), &converted_list);
+  monthly_report.contributions = converted_list;
+
+  std::move(callback).Run(static_cast<uint32_t>(result), monthly_report);
+}
+
 }  // namespace brave_rewards

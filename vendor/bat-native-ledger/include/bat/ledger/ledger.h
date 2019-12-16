@@ -65,6 +65,14 @@ using RecoverWalletCallback = std::function<void(
     const ledger::Result,
     const double balance)>;
 
+using GetTransactionReportCallback = std::function<void(
+    const ledger::Result,
+    ledger::TransactionReportInfoList)>;
+
+using GetContributionReportCallback = std::function<void(
+    const ledger::Result,
+    ledger::ContributionReportInfoList)>;
+
 class LEDGER_EXPORT Ledger {
  public:
   static bool IsMediaLink(const std::string& url,
@@ -319,6 +327,16 @@ class LEDGER_EXPORT Ledger {
   virtual void GetAllPromotions(ledger::GetAllPromotionsCallback callback) = 0;
 
   virtual void GetAnonWalletStatus(ledger::ResultCallback callback) = 0;
+
+  virtual void GetTransactionReport(
+      const ledger::ActivityMonth month,
+      const uint32_t year,
+      ledger::GetTransactionReportCallback callback) = 0;
+
+  virtual void GetContributionReport(
+      const ledger::ActivityMonth month,
+      const uint32_t year,
+      ledger::GetContributionReportCallback callback) = 0;
 };
 
 }  // namespace ledger

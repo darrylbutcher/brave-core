@@ -238,6 +238,10 @@ window.cr.define('brave_rewards', function () {
     getActions().getBalance()
   }
 
+  function monthlyStatement (properties: { result: number, month: number, year: number, report: Rewards.MonthlyReport}) {
+    getActions().onMonthlyStatement(properties)
+  }
+
   return {
     initialize,
     walletCreated,
@@ -281,7 +285,8 @@ window.cr.define('brave_rewards', function () {
     processRewardsPageUrl,
     disconnectWallet,
     onlyAnonWallet,
-    unblindedTokensReady
+    unblindedTokensReady,
+    monthlyStatement
   }
 })
 

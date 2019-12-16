@@ -897,4 +897,66 @@ void BatLedgerImpl::GetAnonWalletStatus(GetAnonWalletStatusCallback callback) {
                 _1));
 }
 
+// static
+void BatLedgerImpl::OnGetTransactionReport(
+    CallbackHolder<GetTransactionReportCallback>* holder,
+    const ledger::Result result,
+    ledger::TransactionReportInfoList list) {
+  if (!holder) {
+    return;
+  }
+
+  if (holder->is_valid()) {
+    std::move(holder->get()).Run(result, std::move(list));
+  }
+  delete holder;
+}
+
+void BatLedgerImpl::GetTransactionReport(
+    const ledger::ActivityMonth month,
+    const uint32_t year,
+    GetTransactionReportCallback callback) {
+  auto* holder = new CallbackHolder<GetTransactionReportCallback>(
+      AsWeakPtr(), std::move(callback));
+
+  ledger_->GetTransactionReport(
+      month,
+      year,
+      std::bind(BatLedgerImpl::OnGetTransactionReport,
+                holder,
+                _1,
+                _2));
+}
+
+// static
+void BatLedgerImpl::OnGetContributionReport(
+    CallbackHolder<GetContributionReportCallback>* holder,
+    const ledger::Result result,
+    ledger::ContributionReportInfoList list) {
+  if (!holder) {
+    return;
+  }
+
+  if (holder->is_valid()) {
+    std::move(holder->get()).Run(result, std::move(list));
+  }
+  delete holder;
+}
+
+void BatLedgerImpl::GetContributionReport(
+    const ledger::ActivityMonth month,
+    const uint32_t year,
+    GetContributionReportCallback callback) {
+  auto* holder = new CallbackHolder<GetContributionReportCallback>(
+      AsWeakPtr(), std::move(callback));
+
+  ledger_->GetContributionReport(
+      month,
+      year,
+      std::bind(BatLedgerImpl::OnGetContributionReport,
+                holder,
+                _1,
+                _2));
+}
+
 }  // namespace bat_ledger

@@ -297,6 +297,11 @@ class RewardsServiceImpl : public RewardsService,
 
   void SetAutoContribute(bool enabled) override;
 
+  void GetMonthlyReport(
+      const uint32_t month,
+      const uint32_t year,
+      GetMonthlyReportCallback callback) override;
+
   // Testing methods
   void SetLedgerEnvForTesting();
   void StartMonthlyContributionForTest();
@@ -799,6 +804,27 @@ class RewardsServiceImpl : public RewardsService,
       GetBalanceReportCallback callback,
       const ledger::Result result,
       ledger::BalanceReportInfoPtr report);
+
+  void OnGetMonthlyReportBalance(
+      const uint32_t month,
+      const uint32_t year,
+      GetMonthlyReportCallback callback,
+      const ledger::Result result,
+      ledger::BalanceReportInfoPtr report);
+
+  void OnGetMonthlyReportTransaction(
+      const uint32_t month,
+      const uint32_t year,
+      const MonthlyReport& report,
+      GetMonthlyReportCallback callback,
+      const ledger::Result result,
+      ledger::TransactionReportInfoList list);
+
+  void OnGetMonthlyReportContribution(
+      const MonthlyReport& report,
+      GetMonthlyReportCallback callback,
+      const ledger::Result result,
+      ledger::ContributionReportInfoList list);
 
 #if defined(OS_ANDROID)
   ledger::Environment GetServerEnvironmentForAndroid();

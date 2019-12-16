@@ -388,3 +388,16 @@ struct RecurringTip {
   double amount;
   uint64 created_at;
 };
+
+struct TransactionReportInfo {
+  double amount;
+  ReportType type;
+  PublisherInfo publisher;
+  uint64 created_at;
+};
+
+struct ContributionReportInfo {
+  double amount;
+  ReportType type;
+  array<PublisherInfo> publishers;
+};
