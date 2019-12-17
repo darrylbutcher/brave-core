@@ -22,6 +22,7 @@
 #include "bat/ads/internal/ads_serve.h"
 #include "bat/ads/internal/bundle.h"
 #include "bat/ads/internal/client.h"
+#include "bat/ads/internal/ad_conversions.h"
 #include "bat/ads/internal/event_type_blur_info.h"
 #include "bat/ads/internal/event_type_destroy_info.h"
 #include "bat/ads/internal/event_type_focus_info.h"
@@ -37,6 +38,7 @@ class Client;
 class Bundle;
 class AdsServe;
 class Notifications;
+class AdConversions;
 class FrequencyCapping;
 class ExclusionRule;
 class PermissionRule;
@@ -56,6 +58,8 @@ class AdsImpl : public Ads {
   void InitializeStep3(
       const Result result);
   void InitializeStep4(
+      const Result result);
+  void InitializeStep5(
       const Result result);
   bool IsInitialized();
 
@@ -330,6 +334,7 @@ class AdsImpl : public Ads {
   std::unique_ptr<AdsServe> ads_serve_;
   std::unique_ptr<FrequencyCapping> frequency_capping_;
   std::unique_ptr<Notifications> notifications_;
+  std::unique_ptr<AdConversions> ad_conversions_;
   std::unique_ptr<usermodel::UserModel> user_model_;
 
  private:
