@@ -141,7 +141,7 @@ Result CatalogState::FromJson(
         conversion_info.type = conversion["type"].GetString();
         conversion_info.url_pattern = conversion["urlPattern"].GetString();
         conversion_info.observation_window =
-            conversion["observationWindow"].GetUint64();
+            conversion["observationWindow"].GetUint();
 
         creative_set_info.ad_conversions.push_back(conversion_info);
       }
