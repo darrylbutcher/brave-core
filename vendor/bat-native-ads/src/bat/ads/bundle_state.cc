@@ -10,22 +10,19 @@
 
 namespace ads {
 
-BundleState::BundleState() :
-    catalog_id(""),
-    catalog_version(0),
-    catalog_ping(0),
-    catalog_last_updated_timestamp_in_seconds(0),
-    categories({}),
-    conversions({}) {}
+BundleState::BundleState()
+    : catalog_version(0),
+      catalog_ping(0),
+      catalog_last_updated_timestamp_in_seconds(0) {}
 
-BundleState::BundleState(const BundleState& state):
-    catalog_id(state.catalog_id),
-    catalog_version(state.catalog_version),
-    catalog_ping(state.catalog_ping),
-    catalog_last_updated_timestamp_in_seconds(
-        state.catalog_last_updated_timestamp_in_seconds),
-    categories(state.categories),
-    conversions(state.conversions) {}
+BundleState::BundleState(const BundleState& state)
+    : catalog_id(state.catalog_id),
+      catalog_version(state.catalog_version),
+      catalog_ping(state.catalog_ping),
+      catalog_last_updated_timestamp_in_seconds(
+          state.catalog_last_updated_timestamp_in_seconds),
+      categories(state.categories),
+      ad_conversions(state.ad_conversions) {}
 
 BundleState::~BundleState() = default;
 
@@ -111,37 +108,37 @@ Result BundleState::FromJson(
 
   categories = new_categories;
 
-  std::vector<ConversionTrackingInfo> new_conversions = {};
+  std::vector<AdConversionInfo> new_conversions = {};
 
   if (bundle.HasMember("conversions")) {
     for (const auto& info : bundle["conversions"].GetArray()) {
-      ConversionTrackingInfo conversion_tracking_info;
+      AdConversionInfo ad_conversion_info;
 
       if (info.HasMember("creativeSetId")) {
-        conversion_tracking_info.creative_set_id =
+        ad_conversion_info.creative_set_id =
             info["creativeSetId"].GetString();
       }
 
       if (info.HasMember("type")) {
-        conversion_tracking_info.type =
+        ad_conversion_info.type =
             info["type"].GetString();
       }
 
       if (info.HasMember("urlPattern")) {
-        conversion_tracking_info.url_pattern =
+        ad_conversion_info.url_pattern =
             info["urlPattern"].GetString();
       }
 
       if (info.HasMember("observationWindow")) {
-        conversion_tracking_info.observation_window =
+        ad_conversion_info.observation_window =
             info["observationWindow"].GetUint();
       }
 
-      new_conversions.push_back(conversion_tracking_info);
+      new_conversions.push_back(ad_conversion_info);
     }
   }
 
-  conversions = new_conversions;
+  ad_conversions = new_conversions;
 
   return SUCCESS;
 }
@@ -205,12 +202,12 @@ void SaveToJson(JsonWriter* writer, const BundleState& state) {
     writer->EndArray();
   }
 
-  writer->EndObject(); // End categories
+  writer->EndObject();
 
   writer->String("conversions");
   writer->StartArray();
-  
-  for (const auto& conversion : state.conversions) {
+
+  for (const auto& conversion : state.ad_conversions) {
     writer->StartObject();
 
     writer->String("creativeSetId");
@@ -228,7 +225,7 @@ void SaveToJson(JsonWriter* writer, const BundleState& state) {
     writer->EndObject();
   }
 
-  writer->EndArray(); // End conversions
+  writer->EndArray();
 
   writer->EndObject();
 }

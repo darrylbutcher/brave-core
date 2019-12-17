@@ -279,11 +279,8 @@ bool BundleStateDatabase::SaveBundleState(
     }
   }
 
-  auto conversions = bundle_state.conversions;
-  for (auto it = conversions.begin(); it != conversions.end(); ++it) {
-    auto ad_conversion_info = *it;
-
-    if (!InsertOrUpdateConversion(ad_conversion_info)) {
+  for (const auto& ad_conversion : bundle_state.ad_conversions) {
+    if (!InsertOrUpdateAdConversion(ad_conversion)) {
         GetDB().RollbackTransaction();
         return false;
     }
@@ -355,7 +352,7 @@ bool BundleStateDatabase::InsertOrUpdateAdInfo(const ads::AdInfo& info) {
   return true;
 }
 
-bool BundleStateDatabase::InsertOrUpdateConversion(
+bool BundleStateDatabase::InsertOrUpdateAdConversion(
     const ads::AdConversionInfo& ad_conversion_info) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
 
@@ -449,7 +446,7 @@ bool BundleStateDatabase::GetAdsForCategory(
   return true;
 }
 
-bool BundleStateDatabase::GetConversions(
+bool BundleStateDatabase::GetAdConversions(
     const std::string& url,
     std::vector<ads::AdConversionInfo>* conversions) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -457,8 +454,9 @@ bool BundleStateDatabase::GetConversions(
   bool initialized = Init();
   DCHECK(initialized);
 
-  if (!initialized)
+  if (!initialized) {
     return false;
+  }
 
   sql::Statement info_sql(
       db_.GetUniqueStatement(
@@ -475,11 +473,6 @@ bool BundleStateDatabase::GetConversions(
     conversions->emplace_back(info);
   }
 
-  return true;
-}
-
-bool BundleStateDatabase::SaveConversion(
-    const ads::AdConversionInfo& conversion) {
   return true;
 }
 

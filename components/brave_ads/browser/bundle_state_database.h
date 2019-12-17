@@ -38,12 +38,11 @@ class BundleStateDatabase {
   }
 
   bool SaveBundleState(const ads::BundleState& bundle_state);
+
   bool GetAdsForCategory(
       const std::string& category,
       std::vector<ads::AdInfo>* ads);
-
-  bool SaveConversion(const ads::AdConversionInfo& conversion);
-  bool GetConversions(
+  bool GetAdConversions(
       const std::string& url,
       std::vector<ads::AdConversionInfo>* conversions);
 
@@ -74,7 +73,7 @@ class BundleStateDatabase {
 
   bool InsertOrUpdateCategory(
       const std::string& category);
-  bool InsertOrUpdateConversion(
+  bool InsertOrUpdateAdConversion(
       const ads::AdConversionInfo& ad_conversion_info);
   bool InsertOrUpdateAdInfo(
       const ads::AdInfo& info);
