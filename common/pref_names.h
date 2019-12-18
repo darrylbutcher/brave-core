@@ -60,6 +60,7 @@ extern const char kBraveEnabledMediaRouter[];
 extern const char kBraveWalletAES256GCMSivNonce[];
 extern const char kBraveWalletEncryptedSeed[];
 extern const char kBraveWalletEnabled[];
+extern const char kBraveWalletProvider[];
 extern const char kAlwaysShowBookmarkBarOnNTP[];
 extern const char kRemoteDebuggingEnabled[];
 extern const char kAutocompleteEnabled[];

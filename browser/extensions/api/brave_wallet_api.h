@@ -81,6 +81,16 @@ class BraveWalletGetProjectIDFunction : public ExtensionFunction {
   ResponseAction Run() override;
 };
 
+class BraveWalletGetWeb3ProviderFunction : public ExtensionFunction {
+ public:
+  DECLARE_EXTENSION_FUNCTION("braveWallet.getWeb3Provider", UNKNOWN)
+
+ protected:
+  ~BraveWalletGetWeb3ProviderFunction() override {}
+
+  ResponseAction Run() override;
+};
+
 }  // namespace api
 }  // namespace extensions
 

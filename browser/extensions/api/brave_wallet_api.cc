@@ -241,5 +241,16 @@ BraveWalletGetProjectIDFunction::Run() {
       std::make_unique<base::Value>(project_id)));
 }
 
+ExtensionFunction::ResponseAction
+BraveWalletGetWeb3ProviderFunction::Run() {
+  std::string project_id(BRAVE_INFURA_PROJECT_ID);
+  std::unique_ptr<base::Environment> env(base::Environment::Create());
+  std::string extension_id = ethereum_remote_client_extension_id;
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  std::string provider = profile->GetPrefs()->GetString(kBraveWalletProvider);
+  return RespondNow(OneArgument(
+      std::make_unique<base::Value>(provider)));
+}
+
 }  // namespace api
 }  // namespace extensions
