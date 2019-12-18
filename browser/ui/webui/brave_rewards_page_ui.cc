@@ -1072,19 +1072,24 @@ void RewardsDOMHandler::GetAdsData(const base::ListValue *args) {
 
   base::DictionaryValue ads_data;
 
-  auto is_supported_locale = ads_service_->IsSupportedLocale();
+  const auto is_supported_locale = ads_service_->IsSupportedLocale();
   ads_data.SetBoolean("adsIsSupported", is_supported_locale);
 
-  auto is_enabled = ads_service_->IsEnabled();
+  const auto is_enabled = ads_service_->IsEnabled();
   ads_data.SetBoolean("adsEnabled", is_enabled);
 
-  auto ads_per_hour = ads_service_->GetAdsPerHour();
+  const auto should_opt_out_of_ad_conversions =
+      ads_service_->ShouldOptOutOfAdConversions();
+  ads_data.SetBoolean("shouldOptOutOfAdConversions",
+      should_opt_out_of_ad_conversions);
+
+  const auto ads_per_hour = ads_service_->GetAdsPerHour();
   ads_data.SetInteger("adsPerHour", ads_per_hour);
 
 #if BUILDFLAG(BRAVE_ADS_ENABLED)
-    auto ads_ui_enabled = true;
+    const auto ads_ui_enabled = true;
 #else
-    auto ads_ui_enabled = false;
+    const auto ads_ui_enabled = false;
 #endif
   ads_data.SetBoolean("adsUIEnabled", ads_ui_enabled);
 
@@ -1291,6 +1296,8 @@ void RewardsDOMHandler::SaveAdsSetting(const base::ListValue* args) {
     const auto is_enabled =
         value == "true" && ads_service_->IsSupportedLocale();
     ads_service_->SetEnabled(is_enabled);
+  } else if (key == "shouldOptOutOfAdConversions") {
+    ads_service_->SetOptOutOfAdConversions(value == "true");
   } else if (key == "adsPerHour") {
     ads_service_->SetAdsPerHour(std::stoull(value));
   }

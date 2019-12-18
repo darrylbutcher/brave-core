@@ -180,6 +180,7 @@ declare namespace Rewards {
 
   export interface AdsData {
     adsEnabled: boolean
+    shouldOptOutOfAdConversions: boolean
     adsPerHour: number
     adsUIEnabled: boolean
     adsIsSupported: boolean

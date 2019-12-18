@@ -234,6 +234,7 @@
       <message name="IDS_BRAVE_REWARDS_LOCAL_ADS_PER_HOUR_3" desc="">3 ads per hour</message>
       <message name="IDS_BRAVE_REWARDS_LOCAL_ADS_PER_HOUR_4" desc="">4 ads per hour</message>
       <message name="IDS_BRAVE_REWARDS_LOCAL_ADS_PER_HOUR_5" desc="">5 ads per hour</message>
+      <message name="IDS_BRAVE_REWARDS_LOCAL_OPT_OUT_OF_AD_CONVERSIONS" desc="">Opt-out of ad conversions</message>
       <message name="IDS_BRAVE_UI_BAT_REWARDS_TEXT" desc="">BAT</message>
       <message name="IDS_BRAVE_UI_BAP_REWARDS_TEXT" desc="">BAP</message>
       <message name="IDS_BRAVE_UI_BAT_POINTS_TEXT" desc="">BAT Points</message>

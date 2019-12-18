@@ -177,7 +177,7 @@ BATClassAdsBridge(BOOL, isTesting, setTesting, _is_testing)
   return [(NSNumber *)self.prefs[kShouldOptOutOfAdConversionsPrefKey] boolValue];
 }
 
-- (void)setShouldOptOutOfAdConversions:(BOOL)shouldOptOut
+- (void)setOptOutOfAdConversions:(BOOL)shouldOptOut
 {
   self.prefs[kShouldOptOutOfAdConversionsPrefKey] = @(shouldOptOut);
 }
