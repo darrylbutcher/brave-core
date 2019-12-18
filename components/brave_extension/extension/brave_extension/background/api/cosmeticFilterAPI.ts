@@ -4,49 +4,22 @@
 
 import shieldsPanelActions from '../actions/shieldsPanelActions'
 
-const generateCosmeticBlockingStylesheet = (hideSelectors: string[], styleSelectors: any) => {
-  let stylesheet = ''
-  if (hideSelectors.length > 0) {
-    stylesheet += hideSelectors[0]
-    for (const selector of hideSelectors.slice(1)) {
-      stylesheet += ',' + selector
-    }
-    stylesheet += '{display:none !important;}\n'
+const informTabOfCosmeticRulesToConsider = (tabId: number, hideRules: string[], customStyleRules: any) => {
+  const message = {
+    type: 'cosmeticFilterConsiderNewRules',
+    hideRules,
+    customStyleRules
   }
-  for (const selector in styleSelectors) {
-    stylesheet += selector + '{' + styleSelectors[selector] + '\n'
+  const options = {
+    frameId: 0
   }
-
-  return stylesheet
+  chrome.tabs.sendMessage(tabId, message, options)
 }
 
 export const injectClassIdStylesheet = (tabId: number, classes: string[], ids: string[], exceptions: string[]) => {
-  chrome.braveShields.classIdStylesheet(classes, ids, exceptions, stylesheet => {
-    chrome.tabs.insertCSS(tabId, {
-      code: stylesheet,
-      cssOrigin: 'user',
-      runAt: 'document_start'
-    })
-  })
-}
-
-export const addSiteCosmeticFilter = async (origin: string, cssfilter: string) => {
-  chrome.storage.local.get('cosmeticFilterList', (storeData = {}) => {
-    let storeList = Object.assign({}, storeData.cosmeticFilterList)
-    if (storeList[origin] === undefined || storeList[origin].length === 0) { // nothing in filter list for origin
-      storeList[origin] = [cssfilter]
-    } else { // add entry
-      storeList[origin].push(cssfilter)
-    }
-    chrome.storage.local.set({ 'cosmeticFilterList': storeList })
-  })
-}
-
-export const removeSiteFilter = (origin: string) => {
-  chrome.storage.local.get('cosmeticFilterList', (storeData = {}) => {
-    let storeList = Object.assign({}, storeData.cosmeticFilterList)
-    delete storeList[origin]
-    chrome.storage.local.set({ 'cosmeticFilterList': storeList })
+  chrome.braveShields.classIdStylesheet(classes, ids, exceptions, (jsonSelectors) => {
+    const hideSelectors = JSON.parse(jsonSelectors)
+    informTabOfCosmeticRulesToConsider(tabId, hideSelectors, null)
   })
 }
 
@@ -57,14 +30,7 @@ export const applyAdblockCosmeticFilters = (tabId: number, hostname: string) => 
       return
     }
 
-    const stylesheet = generateCosmeticBlockingStylesheet(resources.hide_selectors, resources.style_selectors)
-    if (stylesheet) {
-      chrome.tabs.insertCSS(tabId, {
-        code: stylesheet,
-        cssOrigin: 'user',
-        runAt: 'document_start'
-      })
-    }
+    informTabOfCosmeticRulesToConsider(tabId, resources.hide_selectors, resources.style_selectors)
 
     if (resources.injected_script) {
       chrome.tabs.executeScript(tabId, {
@@ -77,6 +43,7 @@ export const applyAdblockCosmeticFilters = (tabId: number, hostname: string) => 
   })
 }
 
+// User generated cosmetic filtering below
 export const applyCSSCosmeticFilters = (tabId: number, hostname: string) => {
   chrome.storage.local.get('cosmeticFilterList', (storeData = {}) => {
     if (!storeData.cosmeticFilterList) {
@@ -103,3 +70,24 @@ export const applyCSSCosmeticFilters = (tabId: number, hostname: string) => {
 export const removeAllFilters = () => {
   chrome.storage.local.set({ 'cosmeticFilterList': {} })
 }
+
+export const addSiteCosmeticFilter = async (origin: string, cssfilter: string) => {
+  chrome.storage.local.get('cosmeticFilterList', (storeData = {}) => {
+    let storeList = Object.assign({}, storeData.cosmeticFilterList)
+    if (storeList[origin] === undefined || storeList[origin].length === 0) { // nothing in filter list for origin
+      storeList[origin] = [cssfilter]
+    } else { // add entry
+      storeList[origin].push(cssfilter)
+    }
+    chrome.storage.local.set({ 'cosmeticFilterList': storeList })
+  })
+}
+
+export const removeSiteFilter = (origin: string) => {
+  chrome.storage.local.get('cosmeticFilterList', (storeData = {}) => {
+    let storeList = Object.assign({}, storeData.cosmeticFilterList)
+    delete storeList[origin]
+    chrome.storage.local.set({ 'cosmeticFilterList': storeList })
+  })
+}
+
