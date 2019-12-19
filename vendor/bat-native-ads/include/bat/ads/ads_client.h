@@ -68,6 +68,10 @@ class ADS_EXPORT AdsClient {
   // Should return |true| if ads is enabled; otherwise, should return |false|
   virtual bool IsEnabled() const = 0;
 
+  // Should return |true| if opt out of ad conversions is enabled; otherwise,
+  // should return |false|
+  virtual bool ShouldOptOutOfAdConversions() const = 0;
+
   // Should return the locale of the operating system using one of the following
   // formats:
   //

@@ -380,6 +380,11 @@ void AdsServiceImpl::SetEnabled(
   rewards_service_->OnAdsEnabled(is_enabled);
 }
 
+void AdsServiceImpl::SetOptOutOfAdConversions(
+    const bool should_opt_out) {
+  SetBooleanPref(prefs::kShouldOptOutOfAdConversions, should_opt_out);
+}
+
 void AdsServiceImpl::SetAdsPerHour(
     const uint64_t ads_per_hour) {
   SetUint64Pref(prefs::kAdsPerHour, ads_per_hour);
@@ -530,6 +535,10 @@ bool AdsServiceImpl::IsEnabled() const {
       GetBooleanPref(brave_rewards::prefs::kBraveRewardsEnabled);
 
   return is_enabled && is_rewards_enabled;
+}
+
+bool AdsServiceImpl::ShouldOptOutOfAdConversions() const {
+  return GetBooleanPref(prefs::kShouldOptOutOfAdConversions);
 }
 
 uint64_t AdsServiceImpl::GetAdsPerHour() const {

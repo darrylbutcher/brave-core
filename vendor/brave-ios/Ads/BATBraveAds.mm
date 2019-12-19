@@ -29,6 +29,7 @@ static const NSInteger kDefaultNumberOfAdsPerDay = 20;
 static const NSInteger kDefaultNumberOfAdsPerHour = 2;
 
 static NSString * const kAdsEnabledPrefKey = @"BATAdsEnabled";
+static NSString * const kShouldOptOutOfAdConversionsPrefKey = @"BATShouldOptOutOfAdConversions";
 static NSString * const kNumberOfAdsPerDayKey = @"BATNumberOfAdsPerDay";
 static NSString * const kNumberOfAdsPerHourKey = @"BATNumberOfAdsPerHour";
 
@@ -169,6 +170,16 @@ BATClassAdsBridge(BOOL, isTesting, setTesting, _is_testing)
   } else {
     [self shutdown];
   }
+}
+
+- (BOOL)shouldOptOutOfAdConversions
+{
+  return [(NSNumber *)self.prefs[kShouldOptOutOfAdConversionsPrefKey] boolValue];
+}
+
+- (void)setShouldOptOutOfAdConversions:(BOOL)shouldOptOut
+{
+  self.prefs[kShouldOptOutOfAdConversionsPrefKey] = @(shouldOptOut);
 }
 
 - (NSInteger)numberOfAllowableAdsPerDay

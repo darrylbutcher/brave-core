@@ -18,6 +18,7 @@ class NativeAdsClient : public ads::AdsClient {
   __unsafe_unretained id<NativeAdsClientBridge> bridge_;
 
   bool IsEnabled() const override;
+  bool ShouldOptOutOfAdConversions() const override;
   uint64_t GetAdsPerDay() const override;
   uint64_t GetAdsPerHour() const override;
   void GetClientInfo(ads::ClientInfo * info) const override;

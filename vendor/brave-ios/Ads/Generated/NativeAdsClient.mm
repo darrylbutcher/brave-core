@@ -19,6 +19,10 @@ bool NativeAdsClient::IsEnabled() const {
   return [bridge_ isAdsEnabled];
 }
 
+bool NativeAdsClient::ShouldOptOutOfAdConversions() const {
+  return [bridge_ shouldOptOutOfAdConversions];
+}
+
 uint64_t NativeAdsClient::GetAdsPerDay() const {
   return [bridge_ getAdsPerDay];
 }

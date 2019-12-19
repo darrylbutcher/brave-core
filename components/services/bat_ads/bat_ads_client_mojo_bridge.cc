@@ -96,6 +96,16 @@ bool BatAdsClientMojoBridge::IsEnabled() const {
   return is_enabled;
 }
 
+bool BatAdsClientMojoBridge::ShouldOptOutOfAdConversions() const {
+  if (!connected()) {
+    return false;
+  }
+
+  bool should_opt_out;
+  bat_ads_client_->ShouldOptOutOfAdConversions(&should_opt_out);
+  return should_opt_out;
+}
+
 bool BatAdsClientMojoBridge::CanShowBackgroundNotifications() const {
   if (!connected())
     return false;
