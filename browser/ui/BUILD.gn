@@ -33,6 +33,15 @@ source_set("ui") {
     ]
   }
 
+  # These are no longer compiled into Chromium on Android, but we
+  # still need them so pull them in here
+  if (is_android) {
+    sources += [
+      "//chrome/browser/ui/webui/favicon_source.cc",
+      "//chrome/browser/ui/webui/favicon_source.h",
+    ]
+  }
+
   if (!is_android) {
     sources += [
       "bookmark/brave_bookmark_tab_helper.cc",
